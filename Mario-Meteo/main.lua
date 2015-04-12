@@ -18,7 +18,6 @@ function love.load()
 
 	--Carica le immagini
 	sunimg = love.graphics.newImage("images/angry_sun_.png")
-	mario = love.graphics.newImage("images/mario-luigi.png")
 	backgroundimg = love.graphics.newImage("images/background.png")
 
 	--Setta il numero di gocce di pioggia
@@ -38,47 +37,49 @@ function love.update()
 	--Aggiorna il sole
 	sun.Update("1")
 
+	--Aggiorna le nuvole
 	cloud_status = clouds.Update(1)
 
-	--Aggiorna le nuvole
+	--Se le nuvole sono in posizione
 	if cloud_status == true then
 		--Aggiorna la pioggia
 		rain.Update()
 		rain_reset_status = false
+	--Altrimenti
 	elseif cloud_past_status == false then
+		--Risetta la pioggia
 		rain.Populate(1000,10,10)
 		rain_reset_status = true
 	end
-
-
-	--byte, check_variable = serial.readbytes(port, 3)
-	--if byte ~= -1 then
-		--act_variable = check_variable
-	--end
-	--print(byte)
-	--print(check_variable)
 end
 
 function love.draw()
 
-	--Setta il fondale ad azzurro
+	--Se il sensore non è coperto
 	if sensor_status == true then
+		--Setta il fondale ad azzurro
 		love.graphics.setBackgroundColor( 89, 156, 231)
 	else
+		--Altrimenti setta il fondale a grigio
 		love.graphics.setBackgroundColor( 156, 156, 156)
 	end
 
+	--Setta l'alpha del fondale
 	love.graphics.setColor( clouds.GetAlphaRGB(), clouds.GetAlphaRGB(), clouds.GetAlphaRGB(), 255 )
 
+	--Disegna l'ambientazione
 	love.graphics.draw(backgroundimg,0,101)
+	
+	--Disegna il sole
 	love.graphics.draw(sunimg, sun.GetX(), sun.GetY(), 0, sun.GetW(), sun.GetH() )
+	
+	--Se le nuvole sono nella corretta
 	if cloud_status == true then
+		--Disegna la pioggia
 		rain.Draw()
 	end
+	--Disegna le nuvole
 	clouds.Draw()
-
-
-	love.graphics.print(act_variable, 400, 300)
 
 	--Aspetta fino al prossimo aggiornamento
 	local cur_time = love.timer.getMicroTime()
